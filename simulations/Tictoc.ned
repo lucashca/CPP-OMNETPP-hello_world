@@ -20,6 +20,9 @@ import hello_world.Txc;
 //
 // Two instances (tic and toc) of Txc connected.
 //
+
+// This defines the model nodes and their inputs and outputs.
+
 network Tictoc
 {
     submodules:
