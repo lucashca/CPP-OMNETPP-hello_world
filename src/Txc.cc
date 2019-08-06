@@ -38,6 +38,11 @@ void Txc::initialize() {
     
     // Responsible for creating a message object that will be used in the future to indicate 
     // the need to send a heartbeat to all network nodes.
+    /*
+        Messages to be scheduled must be compared to the instantiated object itself of the class.
+        For those that are not, you should use other activities, such as the message text or define another object 
+        that inherits from cMessage that contains other attributes.
+    */
     CALL_HEART_BEAT_MSG = new cMessage(""+CALL_HEART_BEAT_ENUM);
     
     //Responsible for creating a heartbeat message that will be sent to all network nodes.
@@ -47,10 +52,14 @@ void Txc::initialize() {
     leaderId = 0;
     state = IDLE;
 
-    //This atribute is
+    // This attribute is defined in the file. HELLO_WORLD-CPP-OMNETPP/simulations/omnetpp.ini
+    // Define the fist node to send a message
     if (par("sendInitialMessage").boolValue()) {
+        // Create a message with text "tictocMsg"
         cMessage *msg = new cMessage("tictocMsg");
+        // Send a msg from the output called "out"
         send(msg, "out");
+        // Call a fist heartBeat();
         heartBeat();
     }
 }
@@ -58,11 +67,13 @@ void Txc::initialize() {
 // Responsible for handling incoming messages
 void Txc::handleMessage(cMessage *msg) {
     // just send back the message we received
-
+    
+    // Verify if msg is a CALL_HEART_BEAT_MSG
     if (msg == CALL_HEART_BEAT_MSG) {
         heartBeat();
     }
-
+    
+     // Verify if msg is a HEART_BEAT
     if (strcmp(HEART_BEAT, msg->getName())==0){
         cMessage *msg = new cMessage("ok");
         send(msg, "out");
@@ -71,10 +82,12 @@ void Txc::handleMessage(cMessage *msg) {
 
 
 void Txc::heartBeat(){
-
+    // Send a heartbeat if i am the leader
     if(leaderId == id){
         cMessage *msg = new cMessage(HEART_BEAT);
         send(msg, "out");
+        // 
+        // Schedule the message to be sent in 0.5 second
         scheduleAt(simTime() + 0.5, CALL_HEART_BEAT_MSG);
     }
 }
