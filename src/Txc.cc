@@ -21,24 +21,33 @@ Define_Module(Txc);
 
 const char* HEART_BEAT = "Heart Beat";
 
+// POSSIBLE STATES FOR A NODE    
 enum STATES {
     IDLE = 1, WAIT_FOR_REPLY, WAIT_FOR_LEADER,
 
 };
 
+    
 enum MESSAGES {
     HEART_BEAT_ENUM = 1, CALL_HEART_BEAT_ENUM, LEADER_ENUM
 
 };
 
+// Responsible for instantiating node attributes
 void Txc::initialize() {
+    
+    // Responsible for creating a message object that will be used in the future to indicate 
+    // the need to send a heartbeat to all network nodes.
     CALL_HEART_BEAT_MSG = new cMessage(""+CALL_HEART_BEAT_ENUM);
+    
+    //Responsible for creating a heartbeat message that will be sent to all network nodes.
     HEART_BEAT_MSG = new cMessage(""+HEART_BEAT_ENUM);
+    
     //SETTING ATRIBUTS
-    id = getIndex();
     leaderId = 0;
     state = IDLE;
 
+    //This atribute is
     if (par("sendInitialMessage").boolValue()) {
         cMessage *msg = new cMessage("tictocMsg");
         send(msg, "out");
@@ -46,6 +55,7 @@ void Txc::initialize() {
     }
 }
 
+// Responsible for handling incoming messages
 void Txc::handleMessage(cMessage *msg) {
     // just send back the message we received
 
